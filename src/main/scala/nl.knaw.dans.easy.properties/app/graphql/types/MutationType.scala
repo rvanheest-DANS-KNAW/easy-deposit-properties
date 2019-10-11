@@ -27,7 +27,7 @@ import nl.knaw.dans.easy.properties.app.model.springfield.{ InputSpringfield, Sp
 import nl.knaw.dans.easy.properties.app.model.state.{ InputState, StateLabel }
 import nl.knaw.dans.easy.properties.app.model.{ Deposit, DepositId, DepositorId, DoiAction, DoiActionEvent, DoiRegisteredEvent, Origin, Timestamp }
 import sangria.relay.Mutation
-import sangria.schema.{ Action, BooleanType, Context, Field, InputField, InputObjectType, ObjectType, OptionInputType, OptionType, StringType, fields }
+import sangria.schema.{ Action, BooleanType, Context, Field, InputField, InputObjectType, ListInputType, ListType, ObjectType, OptionInputType, OptionType, StringType, fields }
 
 trait MutationType {
   this: DepositType
@@ -42,6 +42,8 @@ trait MutationType {
 
   case class AddDepositPayload(clientMutationId: Option[String], depositId: DepositId) extends Mutation
   case class AddBagNamePayload(clientMutationId: Option[String], depositId: DepositId) extends Mutation
+  case class DeleteDepositPayload(clientMutationId: Option[String], depositId: DepositId) extends Mutation
+  case class DeleteDepositsPayload(clientMutationId: Option[String], depositIds: Seq[DepositId]) extends Mutation
   case class UpdateStatePayload(clientMutationId: Option[String], objectId: String) extends Mutation
   case class UpdateIngestStepPayload(clientMutationId: Option[String], objectId: String) extends Mutation
   case class AddIdentifierPayload(clientMutationId: Option[String], objectId: String) extends Mutation
@@ -56,6 +58,14 @@ trait MutationType {
     description = Some("The deposit's identifier."),
     defaultValue = None,
     fieldType = UUIDType,
+    astDirectives = Vector.empty,
+    astNodes = Vector.empty,
+  )
+  private val depositIdsInputField: InputField[Seq[DepositId]] = InputField(
+    name = "depositIds",
+    description = Some("The deposit's identifier."),
+    defaultValue = None,
+    fieldType = ListInputType(UUIDType),
     astDirectives = Vector.empty,
     astNodes = Vector.empty,
   )
@@ -315,6 +325,16 @@ trait MutationType {
     fieldType = OptionType(StateType),
     resolve = ctx => StateResolver.stateById(ctx.value.objectId)(ctx.ctx),
   )
+  private val depositForDeleteDepositField: Field[DataContext, DeleteDepositPayload] = Field(
+    name = "deletedDeposit",
+    fieldType = OptionType(UUIDType),
+    resolve = ctx => ctx.value.depositId,
+  )
+  private val depositsForDeleteDepositField: Field[DataContext, DeleteDepositsPayload] = Field(
+    name = "deletedDeposits",
+    fieldType = ListType(UUIDType),
+    resolve = ctx => ctx.value.depositIds,
+  )
   private val ingestStepField: Field[DataContext, UpdateIngestStepPayload] = Field(
     name = "ingestStep",
     fieldType = OptionType(IngestStepType),
@@ -385,6 +405,36 @@ trait MutationType {
       depositForAddBagNameField,
     ),
     mutateAndGetPayload = addBagName,
+  )
+  private val deleteDepositField: Field[DataContext, Unit] = Mutation.fieldWithClientMutationId[DataContext, Unit, DeleteDepositPayload, InputObjectType.DefaultInput](
+    fieldName = "deleteDeposit",
+    typeName = "DeleteDeposit",
+    tags = List(
+      RequiresAuthentication,
+    ),
+    fieldDescription = Some(""),
+    inputFields = List(
+      depositIdInputField,
+    ),
+    outputFields = fields(
+      depositForDeleteDepositField,
+    ),
+    mutateAndGetPayload = deleteDeposit,
+  )
+  private val deleteDepositsField: Field[DataContext, Unit] = Mutation.fieldWithClientMutationId[DataContext, Unit, DeleteDepositsPayload, InputObjectType.DefaultInput](
+    fieldName = "deleteDeposits",
+    typeName = "DeleteDeposits",
+    tags = List(
+      RequiresAuthentication,
+    ),
+    fieldDescription = Some(""),
+    inputFields = List(
+      depositIdsInputField,
+    ),
+    outputFields = fields(
+      depositsForDeleteDepositField,
+    ),
+    mutateAndGetPayload = deleteDeposits,
   )
   private val updateStateField: Field[DataContext, Unit] = Mutation.fieldWithClientMutationId[DataContext, Unit, UpdateStatePayload, InputObjectType.DefaultInput](
     fieldName = "updateState",
@@ -560,6 +610,16 @@ trait MutationType {
       ))
       .toTry
   }
+  
+  private def deleteDeposit(input: InputObjectType.DefaultInput, context: Context[DataContext, Unit]): Action[DataContext, DeleteDepositPayload] = {
+    val depositIdToBeDeleted = input(depositIdInputField.name).asInstanceOf[DepositId]
+    ???
+  }
+
+  private def deleteDeposits(input: InputObjectType.DefaultInput, context: Context[DataContext, Unit]): Action[DataContext, DeleteDepositsPayload] = {
+    val depositIdsToBeDeleted = input(depositIdsInputField.name).asInstanceOf[Seq[DepositId]]
+    ???
+  }
 
   private def updateState(input: InputObjectType.DefaultInput, context: Context[DataContext, Unit]): Action[DataContext, UpdateStatePayload] = {
     context.ctx.repo.states
@@ -704,6 +764,8 @@ trait MutationType {
     fields = fields[DataContext, Unit](
       addDepositField,
       addBagNameField,
+      deleteDepositField,
+      deleteDepositsField,
       updateStateField,
       updateIngestStepField,
       addIdentifierField,
