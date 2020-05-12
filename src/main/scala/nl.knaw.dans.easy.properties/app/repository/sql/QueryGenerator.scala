@@ -20,6 +20,7 @@ import nl.knaw.dans.easy.properties.app.model.identifier.IdentifierType.Identifi
 import nl.knaw.dans.easy.properties.app.model.sort.DepositOrder
 import nl.knaw.dans.easy.properties.app.model.{ AtTime, Between, DepositFilter, DepositId, EarlierThan, LaterThan, NotBetween, SeriesFilter }
 import nl.knaw.dans.easy.properties.app.repository.{ DepositFilters, DepositorIdFilters }
+import org.apache.commons.lang.BooleanUtils
 
 object QueryGenerator {
 
@@ -49,14 +50,14 @@ object QueryGenerator {
 
   private def createSearchSimplePropertiesSubQuery[T <: DepositFilter](filter: T)(keyValue: String, labelValue: T => String): (TableName, Query, List[PrepStatementResolver]) = {
     val tableName = "SimpleProperties"
-    val query = filter.filter match {
+    filter.filter match {
       case SeriesFilter.ALL =>
-        s"SELECT DISTINCT depositId FROM $tableName WHERE key = ? AND value = ?"
+        val query = s"SELECT DISTINCT depositId FROM $tableName WHERE key = ? AND value = ?"
+        (tableName, query, setString(labelValue(filter)) :: setString(keyValue) :: Nil)
       case SeriesFilter.LATEST =>
-        s"SELECT $tableName.depositId FROM $tableName INNER JOIN (SELECT depositId, max(timestamp) AS max_timestamp FROM $tableName WHERE key = ? GROUP BY depositId) AS ${ tableName }WithMaxTimestamp ON $tableName.timestamp = ${ tableName }WithMaxTimestamp.max_timestamp WHERE value = ?"
+        val query = s"SELECT $tableName.depositId FROM $tableName INNER JOIN (SELECT depositId, max(timestamp) AS max_timestamp FROM $tableName WHERE key = ? GROUP BY depositId) AS ${ tableName }WithMaxTimestamp ON $tableName.timestamp = ${ tableName }WithMaxTimestamp.max_timestamp WHERE key = ? AND value = ?"
+        (tableName, query, setString(labelValue(filter)) :: setString(keyValue) :: setString(keyValue) :: Nil)
     }
-
-    (tableName, query, setString(labelValue(filter)) :: setString(keyValue) :: Nil)
   }
 
   def searchDeposits(filters: DepositFilters): (String, Seq[PrepStatementResolver]) = {
@@ -92,15 +93,16 @@ object QueryGenerator {
         case (("", vs), (subQuery, values)) => subQuery -> (values ::: vs)
         case ((q, vs), (subQuery, values)) => s"$q AND $subQuery" -> (values ::: vs)
       }
+
     val (queryJoinPart, joinValues) = List(
       filters.stateFilter.map(createSearchSubQuery(_)("State", "label", _.label.toString)),
       filters.ingestStepFilter.map(createSearchSimplePropertiesSubQuery(_)("ingest-step", _.label.toString)),
       filters.doiRegisteredFilter.map(createSearchSimplePropertiesSubQuery(_)("doi-registered", _.value.toString)),
       filters.doiActionFilter.map(createSearchSimplePropertiesSubQuery(_)("doi-action", _.value.toString)),
-      filters.curatorFilter.map(createSearchSubQuery(_)("Curation", "datamanagerUserId", _.curator)),
-      filters.isNewVersionFilter.map(createSearchSubQuery(_)("Curation", "isNewVersion", _.isNewVersion.toString)),
-      filters.curationRequiredFilter.map(createSearchSubQuery(_)("Curation", "isRequired", _.curationRequired.toString)),
-      filters.curationPerformedFilter.map(createSearchSubQuery(_)("Curation", "isPerformed", _.curationPerformed.toString)),
+      filters.curatorFilter.map(createSearchSubQuery(_)("Curator", "datamanagerUserId", _.curator)),
+      filters.isNewVersionFilter.map(createSearchSimplePropertiesSubQuery(_)("is-new-version", filter => BooleanUtils.toStringTrueFalse(filter.isNewVersion))),
+      filters.curationRequiredFilter.map(createSearchSimplePropertiesSubQuery(_)("is-curation-required", filter => BooleanUtils.toStringTrueFalse(filter.curationRequired))),
+      filters.curationPerformedFilter.map(createSearchSimplePropertiesSubQuery(_)("is-curation-performed", filter => BooleanUtils.toStringTrueFalse(filter.curationPerformed))),
       filters.contentTypeFilter.map(createSearchSimplePropertiesSubQuery(_)("content-type", _.value.toString)),
     )
       .collect {
@@ -149,10 +151,10 @@ object QueryGenerator {
       filters.ingestStepFilter.map(createSearchSimplePropertiesSubQuery(_)("ingest-step", _.label.toString)),
       filters.doiRegisteredFilter.map(createSearchSimplePropertiesSubQuery(_)("doi-registered", _.value.toString)),
       filters.doiActionFilter.map(createSearchSimplePropertiesSubQuery(_)("doi-action", _.value.toString)),
-      filters.curatorFilter.map(createSearchSubQuery(_)("Curation", "datamanagerUserId", _.curator)),
-      filters.isNewVersionFilter.map(createSearchSubQuery(_)("Curation", "isNewVersion", _.isNewVersion.toString)),
-      filters.curationRequiredFilter.map(createSearchSubQuery(_)("Curation", "isRequired", _.curationRequired.toString)),
-      filters.curationPerformedFilter.map(createSearchSubQuery(_)("Curation", "isPerformed", _.curationPerformed.toString)),
+      filters.curatorFilter.map(createSearchSubQuery(_)("Curator", "datamanagerUserId", _.curator)),
+      filters.isNewVersionFilter.map(createSearchSimplePropertiesSubQuery(_)("is-new-version", filter => BooleanUtils.toStringTrueFalse(filter.isNewVersion))),
+      filters.curationRequiredFilter.map(createSearchSimplePropertiesSubQuery(_)("is-curation-required", filter => BooleanUtils.toStringTrueFalse(filter.curationRequired))),
+      filters.curationPerformedFilter.map(createSearchSimplePropertiesSubQuery(_)("is-curation-performed", filter => BooleanUtils.toStringTrueFalse(filter.curationPerformed))),
       filters.contentTypeFilter.map(createSearchSimplePropertiesSubQuery(_)("content-type", _.value.toString)),
     )
       .collect {
@@ -186,7 +188,7 @@ object QueryGenerator {
       "Deposit" -> "creationTimestamp",
       "State" -> "timestamp",
       "Identifier" -> "timestamp",
-      "Curation" -> "timestamp",
+      "Curator" -> "timestamp",
       "Springfield" -> "timestamp",
       "SimpleProperties" -> "timestamp",
     )
@@ -249,7 +251,7 @@ object QueryGenerator {
   def getIdentifierByTypeAndValue(ids: NonEmptyList[(IdentifierType, String)]): (String, Seq[PrepStatementResolver]) = {
     val (queryWherePart, valuesWherePart) = ids
       .map {
-        case (idType, idValue) => "(identifierSchema = ? AND identifierValue = ?)" -> (setString(idType.toString) :: setString(idValue.toString) :: Nil)
+        case (idType, idValue) => "(identifierSchema = ? AND identifierValue = ?)" -> (setString(idType.toString) :: setString(idValue) :: Nil)
       }
       .foldLeft(("", List.empty[PrepStatementResolver])) {
         case (("", vs), (subQuery, values)) => subQuery -> (vs ::: values)
@@ -302,15 +304,6 @@ object QueryGenerator {
 
   lazy val storeBagName: String = "UPDATE Deposit SET bagName = ? WHERE depositId = ? AND (bagName IS NULL OR bagName='');"
 
-  def storeCuration(isNewVersionDefined: Boolean): String = {
-    // Note: this is a hack: as `isNewVersion` is an optional property, but it is also a `Boolean`, we cannot use `null` in `prepStatement.setBoolean`. This is not allowed by Scala.
-    // Workaround applied here is to add the `isNewVersion` to the end, only if it is defined.
-    if (isNewVersionDefined)
-      "INSERT INTO Curation (depositId, isRequired, isPerformed, datamanagerUserId, datamanagerEmail, timestamp, isNewVersion) VALUES (?, ?, ?, ?, ?, ?, ?);"
-    else
-      "INSERT INTO Curation (depositId, isRequired, isPerformed, datamanagerUserId, datamanagerEmail, timestamp) VALUES (?, ?, ?, ?, ?, ?);"
-  }
-
   lazy val storeIdentifier: String = "INSERT INTO Identifier (depositId, identifierSchema, identifierValue, timestamp) VALUES (?, ?, ?, ?);"
 
   lazy val storeSimpleProperty: String = "INSERT INTO SimpleProperties (depositId, key, value, timestamp) VALUES (?, ?, ?, ?);"
@@ -318,6 +311,8 @@ object QueryGenerator {
   lazy val storeSpringfield: String = "INSERT INTO Springfield (depositId, domain, springfield_user, collection, playmode, timestamp) VALUES (?, ?, ?, ?, ?, ?);"
 
   lazy val storeState: String = "INSERT INTO State (depositId, label, description, timestamp) VALUES (?, ?, ?, ?);"
+
+  lazy val storeCurator: String = "INSERT INTO Curator (depositId, datamanagerUserId, datamanagerEmail, timestamp) VALUES (?, ?, ?, ?);"
 
   def deleteByDepositId(tableName: String)(ids: NonEmptyList[DepositId]): String = {
     s"DELETE FROM $tableName WHERE depositId IN (${ ids.toList.map(_ => "?").mkString(", ") });"

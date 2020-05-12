@@ -13,20 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.easy.properties.app.repository
+package nl.knaw.dans.easy.properties.app.model.iscurationperformed
 
-import nl.knaw.dans.easy.properties.app.model.curation.{ Curation, InputCuration }
-import nl.knaw.dans.easy.properties.app.model.{ Deposit, DepositId }
+import nl.knaw.dans.easy.properties.app.model.SeriesFilter.SeriesFilter
+import nl.knaw.dans.easy.properties.app.model.{ DepositFilter, SeriesFilter }
 
-trait CurationDao extends Deletable {
-
-  def getById(ids: Seq[String]): QueryErrorOr[Seq[Curation]]
-
-  def getCurrent(ids: Seq[DepositId]): QueryErrorOr[Seq[(DepositId, Curation)]]
-
-  def getAll(ids: Seq[DepositId]): QueryErrorOr[Seq[(DepositId, Seq[Curation])]]
-
-  def store(id: DepositId, curation: InputCuration): MutationErrorOr[Curation]
-
-  def getDepositsById(ids: Seq[String]): QueryErrorOr[Seq[(String, Deposit)]]
-}
+case class DepositIsCurationPerformedFilter(curationPerformed: Boolean, filter: SeriesFilter = SeriesFilter.LATEST) extends DepositFilter

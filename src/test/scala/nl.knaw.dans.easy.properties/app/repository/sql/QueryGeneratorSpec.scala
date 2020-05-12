@@ -309,14 +309,15 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |    GROUP BY depositId
         |  ) AS SimplePropertiesWithMaxTimestamp
         |  ON SimpleProperties.timestamp = SimplePropertiesWithMaxTimestamp.max_timestamp
-        |  WHERE value = ?
+        |  WHERE key = ?
+        |  AND value = ?
         |) AS SimplePropertiesSearchResult
         |ON Deposit.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List("ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List("ingest-step", "ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -343,11 +344,11 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |  AND value = ?
         |) AS SimplePropertiesSearchResult
         |ON SelectedDeposits.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List(dt, "ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List(dt, "ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) {
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) {
       case (value, expectedValue: String) => setStringMock(value, expectedValue)
       case (value, expectedValue: DateTime) => setTimestampMock(value, expectedValue)
       case fallback => fail(s"unexpected values $fallback")
@@ -372,11 +373,11 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |) AS SimplePropertiesSearchResult
         |ON Deposit.depositId = SimplePropertiesSearchResult.depositId
         |ORDER BY creationTimestamp DESC;""".stripMargin
-    val expectedSize = List("ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List("ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -410,11 +411,11 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |  AND value = ?
         |) AS SimplePropertiesSearchResult
         |ON Deposit.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List(StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List(StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -455,11 +456,11 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |  AND value = ?
         |) AS SimplePropertiesSearchResult
         |ON SelectedDeposits.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List("user001", "my-bag", StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List("user001", "my-bag", StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -513,7 +514,7 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |) AS SimplePropertiesSearchResult
         |ON SelectedDeposits.depositId = SimplePropertiesSearchResult.depositId
         |ORDER BY depositId DESC;""".stripMargin
-    val expectedSize = List(
+    val expectedValue = List(
       "user001",
       "my-bag",
       dt1,
@@ -524,8 +525,8 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
     )
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) {
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) {
       case (value, expectedValue: String) => setStringMock(value, expectedValue)
       case (value, expectedValue: DateTime) => setTimestampMock(value, expectedValue)
       case fallback => fail(s"unexpected values $fallback")
@@ -580,7 +581,7 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |) AS SimplePropertiesSearchResult
         |ON SelectedDeposits.depositId = SimplePropertiesSearchResult.depositId
         |ORDER BY depositId DESC;""".stripMargin
-    val expectedSize = List(
+    val expectedValue = List(
       "user001",
       "my-bag",
       dt2,
@@ -591,8 +592,8 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
     )
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) {
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) {
       case (value, expectedValue: String) => setStringMock(value, expectedValue)
       case (value, expectedValue: DateTime) => setTimestampMock(value, expectedValue)
       case fallback => fail(s"unexpected values $fallback")
@@ -726,14 +727,15 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |    GROUP BY depositId
         |  ) AS SimplePropertiesWithMaxTimestamp
         |  ON SimpleProperties.timestamp = SimplePropertiesWithMaxTimestamp.max_timestamp
-        |  WHERE value = ?
+        |  WHERE key = ?
+        |  AND value = ?
         |) AS SimplePropertiesSearchResult
         |ON Deposit.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List("ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List("ingest-step", "ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -752,11 +754,11 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |  AND value = ?
         |) AS SimplePropertiesSearchResult
         |ON Deposit.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List("ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List("ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -789,11 +791,11 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |  WHERE key = ?
         |  AND value = ?
         |) AS SimplePropertiesSearchResult ON Deposit.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List(StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List(StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -832,11 +834,11 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |  AND value = ?
         |) AS SimplePropertiesSearchResult
         |ON SelectedDeposits.depositId = SimplePropertiesSearchResult.depositId;""".stripMargin
-    val expectedSize = List(Origin.SMD.toString, StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
+    val expectedValue = List(Origin.SMD.toString, StateLabel.SUBMITTED.toString, "ingest-step", IngestStepLabel.FEDORA.toString)
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -851,16 +853,16 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
          |  (SELECT depositId, MAX(creationTimestamp) AS max FROM Deposit WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
          |  (SELECT depositId, MAX(timestamp) AS max FROM State WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
          |  (SELECT depositId, MAX(timestamp) AS max FROM Identifier WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
-         |  (SELECT depositId, MAX(timestamp) AS max FROM Curation WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
+         |  (SELECT depositId, MAX(timestamp) AS max FROM Curator WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
          |  (SELECT depositId, MAX(timestamp) AS max FROM Springfield WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
          |  (SELECT depositId, MAX(timestamp) AS max FROM SimpleProperties WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId)
          |) AS max_timestamps
          |GROUP BY depositId;""".stripMargin
-    val expectedSize = Seq.fill(6)(depositIds.map(_.toString).toList).flatten
+    val expectedValue = Seq.fill(6)(depositIds.map(_.toString).toList).flatten
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedSize.size
-    forEvery(values zip expectedSize) { case (value, expectedValue) =>
+    values should have size expectedValue.size
+    forEvery(values zip expectedValue) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }
@@ -997,7 +999,7 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
         |OR (identifierSchema = ? AND identifierValue = ?)
         |OR (identifierSchema = ? AND identifierValue = ?)
         |OR (identifierSchema = ? AND identifierValue = ?);""".stripMargin
-    val expectedValues = ids.toList.flatMap { case (depositId, idType) => List(depositId.toString, idType.toString) }
+    val expectedValues = ids.toList.flatMap { case (depositId, idType) => List(depositId.toString, idType) }
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
     values should have size expectedValues.size
@@ -1016,7 +1018,7 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
       """SELECT identifierId, identifierSchema, identifierValue, timestamp
         |FROM Identifier
         |WHERE (identifierSchema = ? AND identifierValue = ?);""".stripMargin
-    val expectedValues = ids.toList.flatMap { case (depositId, idType) => List(depositId.toString, idType.toString) }
+    val expectedValues = ids.toList.flatMap { case (depositId, idType) => List(depositId.toString, idType) }
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
     values should have size expectedValues.size
@@ -1128,13 +1130,14 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
     QueryGenerator.storeBagName shouldBe "UPDATE Deposit SET bagName = ? WHERE depositId = ? AND (bagName IS NULL OR bagName='');"
   }
 
-  "storeCuration" should "yield the query for inserting a Curation into the database if isNewVersion is defined" in {
-    QueryGenerator.storeCuration(true) shouldBe "INSERT INTO Curation (depositId, isRequired, isPerformed, datamanagerUserId, datamanagerEmail, timestamp, isNewVersion) VALUES (?, ?, ?, ?, ?, ?, ?);"
-  }
-
-  it should "yield the query for inserting a Curation into the database if isNewVersion is not defined" in {
-    QueryGenerator.storeCuration(false) shouldBe "INSERT INTO Curation (depositId, isRequired, isPerformed, datamanagerUserId, datamanagerEmail, timestamp) VALUES (?, ?, ?, ?, ?, ?);"
-  }
+  //TODO replace with storeCurator/storeIsNewVersion/storeIsCurationRequired/storeIsCurationPerformed
+//  "storeCuration" should "yield the query for inserting a Curation into the database if isNewVersion is defined" ignore {
+//    QueryGenerator.storeCuration(true) shouldBe "INSERT INTO Curation (depositId, isRequired, isPerformed, datamanagerUserId, datamanagerEmail, timestamp, isNewVersion) VALUES (?, ?, ?, ?, ?, ?, ?);"
+//  }
+//
+//  it should "yield the query for inserting a Curation into the database if isNewVersion is not defined" ignore {
+//    QueryGenerator.storeCuration(false) shouldBe "INSERT INTO Curation (depositId, isRequired, isPerformed, datamanagerUserId, datamanagerEmail, timestamp) VALUES (?, ?, ?, ?, ?, ?);"
+//  }
 
   "storeSimpleProperty" should "yield the query for inserting an Identifier into the database" in {
     QueryGenerator.storeSimpleProperty shouldBe "INSERT INTO SimpleProperties (depositId, key, value, timestamp) VALUES (?, ?, ?, ?);"
@@ -1150,6 +1153,10 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
 
   "storeState" should "yield the query for inserting a State into the database" in {
     QueryGenerator.storeState shouldBe "INSERT INTO State (depositId, label, description, timestamp) VALUES (?, ?, ?, ?);"
+  }
+
+  "storeCurator" should "yield the query for inserting a Curator into the database" in {
+    QueryGenerator.storeCurator shouldBe "INSERT INTO Curator (depositId, datamanagerUserId, datamanagerEmail, timestamp) VALUES (?, ?, ?, ?);"
   }
 
   "deleteByDepositId" should "yield the query for deleting a State from the database" in {

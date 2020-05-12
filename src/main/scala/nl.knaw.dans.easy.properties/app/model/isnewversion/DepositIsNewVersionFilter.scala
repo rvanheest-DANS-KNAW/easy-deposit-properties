@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.easy.properties.app.model.curation
+package nl.knaw.dans.easy.properties.app.model.isnewversion
 
-import nl.knaw.dans.easy.properties.app.model.Timestamp
+import nl.knaw.dans.easy.properties.app.model.SeriesFilter.SeriesFilter
+import nl.knaw.dans.easy.properties.app.model.{ DepositFilter, SeriesFilter }
 
-case class InputCuration(isNewVersion: Option[Boolean],
-                         isRequired: Boolean,
-                         isPerformed: Boolean,
-                         datamanagerUserId: String,
-                         datamanagerEmail: String,
-                         timestamp: Timestamp,
-                        ) {
-
-  def toOutput(id: String): Curation = {
-    Curation(id, isNewVersion, isRequired, isPerformed, datamanagerUserId, datamanagerEmail, timestamp)
-  }
-}
+case class DepositIsNewVersionFilter(isNewVersion: Boolean, filter: SeriesFilter = SeriesFilter.LATEST) extends DepositFilter

@@ -72,21 +72,41 @@
         "email": "does.not.exists1@dans.knaw.nl",
         "timestamp": "2019-01-01T03:03:00.000Z"
       },
+      "curators": {
+        "edges": [
+          {
+            "node": {
+              "userId": "archie002",
+              "email": "does.not.exists2@dans.knaw.nl",
+              "timestamp": "2019-01-01T00:00:00.000Z"
+            }
+          },
+          {
+            "node": {
+              "userId": "archie001",
+              "email": "does.not.exists1@dans.knaw.nl",
+              "timestamp": "2019-01-01T03:03:00.000Z"
+            }
+          }
+        ]
+      },
       "isNewVersion": null,
       "isNewVersionEvents": [
-        {
-          "value": null,
-          "timestamp": "2019-01-01T00:00:00.000Z"
-        }
       ],
-      "curationRequired": true,
+      "curationRequired": {
+        "value": true,
+        "timestamp": "2019-01-01T00:00:00.000Z"
+      },
       "curationRequiredEvents": [
         {
           "value": true,
           "timestamp": "2019-01-01T00:00:00.000Z"
         }
       ],
-      "curationPerformed": true,
+      "curationPerformed": {
+        "value": true,
+        "timestamp": "2019-01-01T04:04:00.000Z"
+      },
       "curationPerformedEvents": [
         {
           "value": false,

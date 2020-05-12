@@ -39,17 +39,35 @@ query Deposit {
             email
             timestamp
         }
-        isNewVersion
+        curators(first: 10) {
+            edges {
+                node {
+                    userId
+                    email
+                    timestamp
+                }
+            }
+        }
+        isNewVersion {
+            value
+            timestamp
+        }
         isNewVersionEvents {
             value
             timestamp
         }
-        curationRequired
+        curationRequired {
+            value
+            timestamp
+        }
         curationRequiredEvents {
             value
             timestamp
         }
-        curationPerformed
+        curationPerformed {
+            value
+            timestamp
+        }
         curationPerformedEvents {
             value
             timestamp
