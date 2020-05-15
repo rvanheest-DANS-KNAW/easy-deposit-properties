@@ -848,21 +848,13 @@ class QueryGeneratorSpec extends TestSupportFixture with MockFactory {
     val (query, values) = QueryGenerator.getLastModifiedDate(depositIds)
 
     val expectedQuery =
-      s"""SELECT depositId, MAX(max) AS max_timestamp
-         |FROM (
-         |  (SELECT depositId, MAX(creationTimestamp) AS max FROM Deposit WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
-         |  (SELECT depositId, MAX(timestamp) AS max FROM State WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
-         |  (SELECT depositId, MAX(timestamp) AS max FROM Identifier WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
-         |  (SELECT depositId, MAX(timestamp) AS max FROM Curator WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
-         |  (SELECT depositId, MAX(timestamp) AS max FROM Springfield WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId) UNION ALL
-         |  (SELECT depositId, MAX(timestamp) AS max FROM SimpleProperties WHERE depositId IN (?, ?, ?, ?, ?) GROUP BY depositId)
-         |) AS max_timestamps
-         |GROUP BY depositId;""".stripMargin
-    val expectedValue = Seq.fill(6)(depositIds.map(_.toString).toList).flatten
+      s"""SELECT *
+         |FROM LastModified
+         |WHERE depositId IN (?, ?, ?, ?, ?);""".stripMargin
 
     query should equal(expectedQuery)(after being whiteSpaceNormalised)
-    values should have size expectedValue.size
-    forEvery(values zip expectedValue) { case (value, expectedValue) =>
+    values should have size depositIds.size
+    forEvery(values zip depositIds.map(_.toString).toList) { case (value, expectedValue) =>
       setStringMock(value, expectedValue)
     }
   }

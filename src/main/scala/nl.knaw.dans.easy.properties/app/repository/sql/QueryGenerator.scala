@@ -184,22 +184,9 @@ object QueryGenerator {
 
   def getLastModifiedDate(ids: NonEmptyList[DepositId]): (String, Seq[PrepStatementResolver]) = {
     val whereClause = ids.toList.map(_ => "?").mkString("WHERE depositId IN (", ", ", ")")
-    val tablesAndMaxFields = List(
-      "Deposit" -> "creationTimestamp",
-      "State" -> "timestamp",
-      "Identifier" -> "timestamp",
-      "Curator" -> "timestamp",
-      "Springfield" -> "timestamp",
-      "SimpleProperties" -> "timestamp",
-    )
-    val query = tablesAndMaxFields
-      .map { case (table, maxField) => s"(SELECT depositId, MAX($maxField) AS max FROM $table $whereClause GROUP BY depositId)" }
-      .mkString("SELECT depositId, MAX(max) AS max_timestamp FROM (", " UNION ALL ", ") AS max_timestamps GROUP BY depositId;")
+    val query = s"SELECT * FROM LastModified $whereClause;"
 
-    val stringIds = ids.map(setDepositId)
-    val values = tablesAndMaxFields.map(_ => stringIds).reduce(_ ::: _).toList
-
-    query -> values
+    query -> ids.map(setDepositId).toList
   }
 
   def getElementsById(tableName: String, idColumnName: String)(ids: NonEmptyList[String]): (String, Seq[PrepStatementResolver]) = {
