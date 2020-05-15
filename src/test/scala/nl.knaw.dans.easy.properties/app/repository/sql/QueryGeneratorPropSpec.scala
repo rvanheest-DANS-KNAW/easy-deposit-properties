@@ -107,6 +107,7 @@ class QueryGeneratorPropSpec extends AnyPropSpec with ScalaCheckDrivenPropertyCh
         Option[DepositContentTypeFilter],
         Option[Origin.Origin],
         Option[TimeFilter],
+        Option[TimeFilter],
         Option[DepositOrder],
       )]
       .map(DepositFilters.tupled)
