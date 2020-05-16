@@ -78,5 +78,5 @@ GRANT INSERT, SELECT, DELETE ON Identifier TO easy_deposit_properties;
 GRANT INSERT, SELECT, DELETE ON Curator TO easy_deposit_properties;
 GRANT INSERT, SELECT, DELETE ON Springfield TO easy_deposit_properties;
 GRANT INSERT, SELECT, DELETE ON SimpleProperties TO easy_deposit_properties;
-GRANT SELECT ON last_modified TO easy_deposit_properties;
+GRANT SELECT ON LastModified TO easy_deposit_properties;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO easy_deposit_properties;
