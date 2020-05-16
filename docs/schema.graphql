@@ -108,17 +108,17 @@ type ContentType implements Node {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -232,17 +232,17 @@ type Curator implements Node {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -715,17 +715,17 @@ type Depositor {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -899,17 +899,17 @@ type IngestStep implements Node {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -1029,17 +1029,17 @@ type IsCurationPerformed implements Node {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -1094,17 +1094,17 @@ type IsCurationRequired implements Node {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -1159,17 +1159,17 @@ type IsNewVersion implements Node {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -1352,17 +1352,17 @@ type Query {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int
@@ -1740,17 +1740,17 @@ type State implements Node {
     """
     List only those deposits that have a last modified timestamp earlier than this given timestamp.
     """
-    lastModfiedEarlierThan: DateTime
+    lastModifiedEarlierThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp later than this given timestamp.
     """
-    lastModfiedLaterThan: DateTime
+    lastModifiedLaterThan: DateTime
 
     """
     List only those deposits that have a last modified timestamp equal to the given timestamp.
     """
-    lastModfiedAtTimestamp: DateTime
+    lastModifiedAtTimestamp: DateTime
     before: String
     after: String
     first: Int

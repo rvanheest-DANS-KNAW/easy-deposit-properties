@@ -61,9 +61,9 @@ class GraphQLState(state: State) extends Node {
                @GraphQLDescription("List only those deposits that have a creation timestamp earlier than this given timestamp.") createdEarlierThan: Option[DateTime] = None,
                @GraphQLDescription("List only those deposits that have a creation timestamp later than this given timestamp.") createdLaterThan: Option[DateTime] = None,
                @GraphQLDescription("List only those deposits that have a creation timestamp equal to the given timestamp.") createdAtTimestamp: Option[DateTime] = None,
-               @GraphQLDescription("List only those deposits that have a last modified timestamp earlier than this given timestamp.") lastModfiedEarlierThan: Option[DateTime] = None,
-               @GraphQLDescription("List only those deposits that have a last modified timestamp later than this given timestamp.") lastModfiedLaterThan: Option[DateTime] = None,
-               @GraphQLDescription("List only those deposits that have a last modified timestamp equal to the given timestamp.") lastModfiedAtTimestamp: Option[DateTime] = None,
+               @GraphQLDescription("List only those deposits that have a last modified timestamp earlier than this given timestamp.") lastModifiedEarlierThan: Option[DateTime] = None,
+               @GraphQLDescription("List only those deposits that have a last modified timestamp later than this given timestamp.") lastModifiedLaterThan: Option[DateTime] = None,
+               @GraphQLDescription("List only those deposits that have a last modified timestamp equal to the given timestamp.") lastModifiedAtTimestamp: Option[DateTime] = None,
                before: Option[String] = None,
                after: Option[String] = None,
                first: Option[Int] = None,
@@ -72,7 +72,7 @@ class GraphQLState(state: State) extends Node {
     DepositResolver.findDeposit(DepositFilters(
       stateFilter = Some(DepositStateFilter(label, stateFilter)),
       creationTimeFilter = TimeFilter(createdEarlierThan, createdLaterThan, createdAtTimestamp),
-      lastModifiedTimeFilter = TimeFilter(lastModfiedEarlierThan, lastModfiedLaterThan, lastModfiedAtTimestamp),
+      lastModifiedTimeFilter = TimeFilter(lastModifiedEarlierThan, lastModifiedLaterThan, lastModifiedAtTimestamp),
       sort = orderBy,
     ))
       .map(deposits => ExtendedConnection.connectionFromSeq(
